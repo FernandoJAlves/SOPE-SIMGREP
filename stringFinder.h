@@ -14,4 +14,8 @@ void match_pattern(char str[], char file_path[],options * op);
 
 int stringFinder(int argc,char *argv[]);
 
+void convertToUpperCase(char sPtr[],char  res[]);
+
+char * isWord();
+
 #endif

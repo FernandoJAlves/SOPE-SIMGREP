@@ -10,16 +10,7 @@
 
 #include "stringFinder.h"
 
-void convertToUpperCase(char sPtr[],char  res[])
-{
-  strcpy(res, sPtr);
-  for(int i = 0; res[i] != '\0';i++) {
-    if (islower(res[i])){
-      res[i] = toupper(res[i]);
-    }
-  }
 
-}
 
 void match_pattern(char str[], char file_path[], options * op)
 {
@@ -47,10 +38,17 @@ void match_pattern(char str[], char file_path[], options * op)
 
           convertToUpperCase(line,line_temp);
           convertToUpperCase(str,str_temp);
-          res = strstr(line_temp,str_temp);
+
         }
         else{
-          res = strstr(line,str);
+          strcpy(line_temp,line);
+          strcpy(str_temp,str);
+        }
+        if(op->w){
+          res = isWord();
+        }
+        else {
+          res = strstr(line_temp,str_temp);
         }
 
         if(res!=NULL){
@@ -69,6 +67,22 @@ void match_pattern(char str[], char file_path[], options * op)
 
     }
   }
+}
+
+void convertToUpperCase(char sPtr[],char  res[])
+{
+  strcpy(res, sPtr);
+  for(int i = 0; res[i] != '\0';i++) {
+    if (islower(res[i])){
+      res[i] = toupper(res[i]);
+    }
+  }
+
+}
+
+char * isWord(){
+  char * res = NULL;
+  return res;
 }
 
 
