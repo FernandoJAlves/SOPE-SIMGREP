@@ -10,7 +10,7 @@ typedef struct{
 	int r;
 } options;
 
-void match_pattern(char str[], char file_path[]);
+void match_pattern(char str[], char file_path[],options * op);
 
 int stringFinder(int argc,char *argv[]);
 

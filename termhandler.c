@@ -6,7 +6,7 @@
 void sigint_handler(int signo){
 	char ans;
 	while(1){
-		printf("Are you sure you want to terminate the program? (Y/N) ");
+		printf("\nAre you sure you want to terminate the program? (Y/N) ");
 		scanf("%c",&ans);
 		printf("\n");
 		if(ans == 'y' || ans == 'Y'){
