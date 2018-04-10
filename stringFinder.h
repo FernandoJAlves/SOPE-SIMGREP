@@ -16,6 +16,6 @@ int stringFinder(int argc,char *argv[]);
 
 void convertToUpperCase(char sPtr[],char  res[]);
 
-char * isWord();
+char * isWord(char line[], char str[]);
 
 #endif

@@ -45,7 +45,7 @@ void match_pattern(char str[], char file_path[], options * op)
           strcpy(str_temp,str);
         }
         if(op->w){
-          res = isWord();
+          res = isWord(line_temp,str_temp);
         }
         else {
           res = strstr(line_temp,str_temp);
@@ -80,9 +80,22 @@ void convertToUpperCase(char sPtr[],char  res[])
 
 }
 
-char * isWord(){
-  char * res = NULL;
-  return res;
+char * isWord(char line[], char str[]){
+  char * p = line;
+  while(1){
+    p = strstr(p,str);
+    if (p == NULL) return NULL;
+
+    if ((p==line) || (isalnum((unsigned char)p[-1]) == 0)) {
+      p += strlen(str);
+      if (isalnum((unsigned char)*p) == 0){
+        return str;
+      }
+    }
+    // substring was found, but no word match, move by 1 char and retry
+    p+=1;
+  }
+  return NULL;
 }
 
 
