@@ -16,7 +16,7 @@ void match_pattern(char str[], char file_path[], options * op)
 {
   int fd,r,j=0;
   char temp,line[100];
-  int n = 1;
+  int n = 0;
   char * res;
   char line_temp[256];
   char str_temp[256];
@@ -52,21 +52,31 @@ void match_pattern(char str[], char file_path[], options * op)
         }
 
         if(res!=NULL){
-          if(op->n){
-            printf("%d:%s\n",n,line);
+          n++;
+          if(op->l){
+            printf("%s\n",file_path);
+            return;
           }
-          else{
+          else if(!op->n && !op->c){
             printf("%s\n",line);
           }
-        };
+          else if(op->n){
+            printf("%d:%s\n",n,line);
+          }
+
+        }
         memset(line,0,sizeof(line));
         j=0;
-        n++;
+        
 
       }
 
     }
   }
+  if(op->c){
+      printf("%d\n",n);
+  }
+
 }
 
 void convertToUpperCase(char sPtr[],char  res[])
