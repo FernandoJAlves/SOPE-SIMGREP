@@ -14,9 +14,9 @@
 
 void match_pattern(char str[], char file_path[], options * op)
 {
-  int fd,r,j=0;
+  int fd,r,c=0,j=0;
   char temp,line[100];
-  int n = 0;
+  int n = 1;
   char * res;
   char line_temp[256];
   char str_temp[256];
@@ -52,7 +52,7 @@ void match_pattern(char str[], char file_path[], options * op)
         }
 
         if(res!=NULL){
-          n++;
+          c++;
           if(op->l){
             printf("%s\n",file_path);
             return;
@@ -67,14 +67,14 @@ void match_pattern(char str[], char file_path[], options * op)
         }
         memset(line,0,sizeof(line));
         j=0;
-        
+	n++;
 
       }
 
     }
   }
   if(op->c){
-      printf("%d\n",n);
+      printf("%d\n",c);
   }
 
 }
