@@ -287,7 +287,7 @@ int stringFinder(int argc,char *argv[]){
     }
     else{
       if(op.r){
-        directory_finder(argv[argc-1],"",&op);
+        directory_finder(argv[argc-1],"./",&op);
       }
       else{
         match_pattern_stdin(argv[argc-1],&op);
