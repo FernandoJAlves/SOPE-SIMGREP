@@ -219,7 +219,7 @@ void directory_finder(char str[], char path[],options * op){
   DIR * dir;
   struct dirent *dentry;
   struct stat stat_entry; 
-  pid_t pids[100];
+  pid_t pids[32];
   unsigned int n = 0;
 
   if ((dir = opendir(path)) == NULL) {
@@ -232,8 +232,8 @@ void directory_finder(char str[], char path[],options * op){
     char new_path[256];
     strcpy(new_path,path);
     stat(dentry->d_name, &stat_entry);
-    
-    if(dentry->d_name[0] == '.'){
+
+    if(dentry->d_name[0] == '.' || (strcmp(dentry->d_name,"simgrep") == 0)){
       continue;
     }
     if (S_ISREG(stat_entry.st_mode)) {
