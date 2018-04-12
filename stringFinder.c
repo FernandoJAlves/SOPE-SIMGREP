@@ -217,10 +217,9 @@ void setOptions(int argc, char *argv[],options * op){
 
 void directory_finder(char str[], char path[],options * op){
   DIR * dir;
-  int * wstatus = NULL;
   struct dirent *dentry;
   struct stat stat_entry; 
-  pid_t pids[32];
+  pid_t pids[100];
   unsigned int n = 0;
 
   if ((dir = opendir(path)) == NULL) {
@@ -251,7 +250,7 @@ void directory_finder(char str[], char path[],options * op){
       }
       else if(pids[n-1] == 0){
         directory_finder(str,new_path,op);
-        exit(0);
+        break;
       }
       else{
         exit(1);
@@ -260,7 +259,7 @@ void directory_finder(char str[], char path[],options * op){
     }
   }
   for(unsigned int i = 0; i < n;i++){
-    waitpid(pids[i],wstatus,0);
+    waitpid(pids[i],NULL,0);
   }
 }
 
