@@ -13,7 +13,66 @@
 
 #include "stringFinder.h"
 
+#define LENGTH 100
 
+void match_pattern_stdin(char str[],options * op){
+  int r,c=0;
+  char line[LENGTH];
+  int n = 1;
+  char * res;
+  char line_temp[256];
+  char str_temp[256];
+
+  while((r = read(STDIN_FILENO,line,LENGTH)))
+  {
+    if(op->i){
+
+      convertToUpperCase(line,line_temp);
+      convertToUpperCase(str,str_temp);
+
+    }
+    else{
+      strcpy(line_temp,line);
+      strcpy(str_temp,str);
+    }
+    
+    if(op->w){
+      res = isWord(line_temp,str_temp);
+    }
+    else {
+      res = strstr(line_temp,str_temp);
+    }
+
+    if(res!=NULL){
+      c++;
+      if(op->l){
+        printf("%s\n",line);
+        printf("(standard input)\n");
+        return;
+      }
+      else if(!op->n && !op->c){
+        
+          printf("%s\n",line);
+      
+      }
+      else if(op->n){
+        
+          printf("%d:%s\n",n,line);
+        
+
+      }
+
+    }
+    memset(line,0,sizeof(line));
+    n++;
+
+
+  }
+  if(op->c){
+    printf("%d\n",c);
+  }
+
+}
 
 void match_pattern(char str[], char file_path[], options * op)
 {
@@ -210,8 +269,8 @@ int stringFinder(int argc,char *argv[]){
   struct stat stt;
   options op = {0,0,0,0,0,0,0,0,0};
   setOptions(argc, argv, &op);
-  if(argc >= 3){
-      
+  if(argc >= 2){
+
     if(stat(argv[argc-1],&stt)==0){
       if(S_ISREG(stt.st_mode)){
         match_pattern(argv[argc-2],argv[argc-1],&op);
@@ -227,8 +286,12 @@ int stringFinder(int argc,char *argv[]){
       }
     }
     else{
-      perror("stat()");
-      exit(1);
+      if(op.r){
+        directory_finder(argv[argc-1],"",&op);
+      }
+      else{
+        match_pattern_stdin(argv[argc-1],&op);
+      }
     }
   }
   else{
