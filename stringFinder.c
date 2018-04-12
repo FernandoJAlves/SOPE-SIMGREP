@@ -52,12 +52,12 @@ void match_pattern_stdin(char str[],options * op){
       }
       else if(!op->n && !op->c){
         
-          printf("%s\n",line);
+          printf("%s",line);
       
       }
       else if(op->n){
         
-          printf("%d:%s\n",n,line);
+          printf("%d:%s",n,line);
         
 
       }
@@ -269,7 +269,7 @@ int stringFinder(int argc,char *argv[]){
   struct stat stt;
   options op = {0,0,0,0,0,0,0,0,0};
   setOptions(argc, argv, &op);
-  if(argc >= 2){
+  if(argc > 1){
 
     if(stat(argv[argc-1],&stt)==0){
       if(S_ISREG(stt.st_mode)){
