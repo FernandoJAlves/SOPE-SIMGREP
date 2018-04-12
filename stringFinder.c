@@ -23,7 +23,6 @@ void match_pattern(char str[], char file_path[], options * op)
   char * res;
   char line_temp[256];
   char str_temp[256];
-
   if((fd=open(file_path,O_RDONLY)) != -1)
   {
 
@@ -61,10 +60,21 @@ void match_pattern(char str[], char file_path[], options * op)
             return;
           }
           else if(!op->n && !op->c){
-            printf("%s\n",line);
+            if(op->r){
+              printf("%s:%s\n",file_path,line);
+            }
+            else{
+              printf("%s\n",line);
+            }
           }
           else if(op->n){
-            printf("%d:%s\n",n,line);
+            if(op->r){
+              printf("%s:%d:%s\n",file_path,n,line);
+            }
+            else{
+              printf("%d:%s\n",n,line);
+            }
+            
           }
 
         }
@@ -151,39 +161,47 @@ void directory_finder(char str[], char path[],options * op){
   int * wstatus = NULL;
   struct dirent *dentry;
   struct stat stat_entry; 
-  
-  char new_path[256];
-
-  strcpy(new_path,path);
+  pid_t pids[32];
+  unsigned int n = 0;
 
   if ((dir = opendir(path)) == NULL) {
     perror(path);
     exit(2);
   }
 
-  chdir(path); 
 
   while ((dentry = readdir(dir)) != NULL) {
+    char new_path[256];
+    strcpy(new_path,path);
     stat(dentry->d_name, &stat_entry);
-    strcat(new_path,dentry->d_name);
+    
+    if(dentry->d_name[0] == '.'){
+      continue;
+    }
     if (S_ISREG(stat_entry.st_mode)) {
+      strcat(new_path,dentry->d_name);
       match_pattern(str,new_path,op);
     }
     else if(S_ISDIR(stat_entry.st_mode)){
-      pid_t pid = fork();
-      if(pid > 0){
-        wait(wstatus);
+      strcat(new_path,dentry->d_name);
+      strcat(new_path,"/");
+      pids[n] = fork();
+      n++;
+      if(pids[n-1] > 0){
         continue;
       }
-      else if(pid == 0){
+      else if(pids[n-1] == 0){
         directory_finder(str,new_path,op);
         exit(0);
       }
       else{
         exit(1);
       }
+      
     }
-
+  }
+  for(unsigned int i = 0; i < n;i++){
+    waitpid(pids[i],wstatus,0);
   }
 }
 
