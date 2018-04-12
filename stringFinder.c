@@ -7,6 +7,9 @@
 #include <string.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <dirent.h> 
+#include <sys/wait.h>
+
 
 #include "stringFinder.h"
 
@@ -110,6 +113,7 @@ char * isWord(char line[], char str[]){
 
 
 void setOptions(int argc, char *argv[],options * op){
+
   for(int i = 1; i < argc; i++){
     if(*argv[i] == '-'){
       for(char * c = argv[i];*c != '\0'; c++){
@@ -139,23 +143,72 @@ void setOptions(int argc, char *argv[],options * op){
         }
       }
     }
+  }
+}
+
+void directory_finder(char str[], char path[],options * op){
+  DIR * dir;
+  int * wstatus = NULL;
+  struct dirent *dentry;
+  struct stat stat_entry; 
+  
+  char new_path[256];
+
+  strcpy(new_path,path);
+
+  if ((dir = opendir(path)) == NULL) {
+    perror(path);
+    exit(2);
+  }
+
+  chdir(path); 
+
+  while ((dentry = readdir(dir)) != NULL) {
+    stat(dentry->d_name, &stat_entry);
+    strcat(new_path,dentry->d_name);
+    if (S_ISREG(stat_entry.st_mode)) {
+      match_pattern(str,new_path,op);
+    }
+    else if(S_ISDIR(stat_entry.st_mode)){
+      pid_t pid = fork();
+      if(pid > 0){
+        wait(wstatus);
+        continue;
+      }
+      else if(pid == 0){
+        directory_finder(str,new_path,op);
+        exit(0);
+      }
+      else{
+        exit(1);
+      }
+    }
 
   }
 }
 
-int stringFinder(int argc,char *argv[])
-{
-  struct stat stt;
-  options op = {0,0,0,0,0,0};
-  setOptions(argc, argv, &op);
-  if(argc >= 3)
-  {
-    if(stat(argv[argc-1],&stt)==0){
-      match_pattern(argv[argc-2],argv[argc-1],&op);
+int stringFinder(int argc,char *argv[]){
 
+  struct stat stt;
+  options op = {0,0,0,0,0,0,0,0,0};
+  setOptions(argc, argv, &op);
+  if(argc >= 3){
+      
+    if(stat(argv[argc-1],&stt)==0){
+      if(S_ISREG(stt.st_mode)){
+        match_pattern(argv[argc-2],argv[argc-1],&op);
+      }
+      else if(S_ISDIR (stt.st_mode)){
+        if(op.r){
+          directory_finder(argv[argc-2],argv[argc-1],&op);
+        }
+        else{
+          perror("The path given is a directory");
+          exit(1);
+        }
+      }
     }
-    else
-    {
+    else{
       perror("stat()");
       exit(1);
     }
@@ -164,6 +217,5 @@ int stringFinder(int argc,char *argv[])
     perror("Wrong number of arguments");
     exit(1);
   }
-
   return 0;
 }

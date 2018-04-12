@@ -8,6 +8,9 @@ typedef struct{
 	int c;
 	int w;
 	int r;
+	int pattern;
+	int dir;
+	int file;
 } options;
 
 void match_pattern(char str[], char file_path[],options * op);
