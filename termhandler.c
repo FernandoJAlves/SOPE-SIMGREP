@@ -4,10 +4,12 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "regist.h"
 
 pid_t parent_pid;
 
 void sigint_handler(int signo){
+	writeAction("SINAL SIGINT");
 	if(getpid() != parent_pid){
 		return;
 	}
@@ -18,6 +20,7 @@ void sigint_handler(int signo){
 		printf("\n");
 		if(ans == 'y' || ans == 'Y'){
 			signal(SIGQUIT, SIG_IGN);
+			writeAction("SINAL SIGQUIT para todos os descendentes");
 			kill(parent_pid, SIGQUIT);
 			exit(0);
 		}

@@ -10,8 +10,8 @@
 #include <dirent.h> 
 #include <sys/wait.h>
 
-
 #include "stringFinder.h"
+#include "regist.h"
 
 #define LENGTH 100
 
@@ -77,14 +77,14 @@ void match_pattern_stdin(char str[],options * op){
 void match_pattern(char str[], char file_path[], options * op)
 {
   int fd,r,c=0,j=0;
-  char temp,line[100];
+  char temp,line[256];
   int n = 1;
   char * res;
   char line_temp[256];
   char str_temp[256];
+  writeFileAction('a',file_path);
   if((fd=open(file_path,O_RDONLY)) != -1)
   {
-
     while((r=read(fd,&temp,sizeof(char)))!= 0)
     {
 
@@ -145,9 +145,14 @@ void match_pattern(char str[], char file_path[], options * op)
 
     }
   }
+  else{
+    return;
+  }
   if(op->c){
       printf("%d\n",c);
   }
+  writeFileAction('f',file_path);
+  close(fd);
 
 }
 
@@ -219,21 +224,21 @@ void directory_finder(char str[], char path[],options * op){
   DIR * dir;
   struct dirent *dentry;
   struct stat stat_entry; 
-  pid_t pids[32];
+  pid_t pids[64];
   unsigned int n = 0;
 
   if ((dir = opendir(path)) == NULL) {
     perror(path);
     exit(2);
   }
-
+  writeFileAction('a',path);
 
   while ((dentry = readdir(dir)) != NULL) {
     char new_path[256];
     strcpy(new_path,path);
     stat(dentry->d_name, &stat_entry);
 
-    if(dentry->d_name[0] == '.' || (strcmp(dentry->d_name,"simgrep") == 0)){
+    if(dentry->d_name[0] == '.' || (strcmp(dentry->d_name,"simgrep") == 0)) {
       continue;
     }
     if (S_ISREG(stat_entry.st_mode)) {
@@ -261,10 +266,11 @@ void directory_finder(char str[], char path[],options * op){
   for(unsigned int i = 0; i < n;i++){
     waitpid(pids[i],NULL,0);
   }
+  writeFileAction('f',path);
+  closedir(dir);
 }
 
 int stringFinder(int argc,char *argv[]){
-
   struct stat stt;
   options op = {0,0,0,0,0,0,0,0,0};
   setOptions(argc, argv, &op);
