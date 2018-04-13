@@ -1,0 +1,19 @@
+0.00 - 15623 - COMANDO grep -r chair pasta/
+0.00 - 15623 - ABERTO pasta/
+0.00 - 15624 - ABERTO pasta/p1/
+1.00 - 15625 - ABERTO pasta/p3/
+1.00 - 15624 - FECHADO pasta/p1/
+1.00 - 15625 - ABERTO pasta/p3/infile.txt
+1.00 - 15624 - FECHADO pasta/
+1.00 - 15626 - ABERTO pasta/p2/
+1.00 - 15626 - ABERTO pasta/p2/9.txt
+3.00 - 15625 - FECHADO pasta/p3/infile.txt
+3.00 - 15625 - FECHADO pasta/p3/
+3.00 - 15625 - FECHADO pasta/
+38.00 - 15626 - FECHADO pasta/p2/9.txt
+38.00 - 15626 - ABERTO pasta/p2/3.txt
+59.00 - 15626 - FECHADO pasta/p2/3.txt
+59.00 - 15626 - ABERTO pasta/p2/4.txt
+84.00 - 15626 - FECHADO pasta/p2/4.txt
+84.00 - 15626 - ABERTO pasta/p2/index.txt
+195.00 - 15623 - FECHADO pasta/

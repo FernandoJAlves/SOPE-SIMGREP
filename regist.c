@@ -12,14 +12,14 @@ char * path;
 
 void initReg(){
 	gettimeofday(&begin,NULL);
-	
+	path = getenv("LOGFILENAME");
 	if(path != NULL){
-		path = getenv("LOGFILENAME");
 		fd=open(path,O_WRONLY|O_APPEND|O_CREAT,0644);
 
 	}
 	else{
 		fd = 0;
+		path = NULL;
 	}
 }
 
@@ -28,7 +28,7 @@ void writeAction(char action[]){
 	if(fd != 0){
 		char temp[256];
 		double inst = 1000*(stop.tv_sec - begin.tv_sec) + (stop.tv_usec - begin.tv_usec)/1000;
-		sprintf(temp,"%f - %d - %s\n",inst,getpid(),action);
+		sprintf(temp,"%.*f - %d - %s\n",2,inst,getpid(),action);
 		write(fd,temp,strlen(temp));
 	}
 }
