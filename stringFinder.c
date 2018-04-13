@@ -236,17 +236,16 @@ void directory_finder(char str[], char path[],options * op){
   while ((dentry = readdir(dir)) != NULL) {
     char new_path[256];
     strcpy(new_path,path);
-    stat(dentry->d_name, &stat_entry);
+    strcat(new_path,dentry->d_name);
+    stat(new_path, &stat_entry);
 
     if(dentry->d_name[0] == '.' || (strcmp(dentry->d_name,"simgrep") == 0)) {
       continue;
     }
     if (S_ISREG(stat_entry.st_mode)) {
-      strcat(new_path,dentry->d_name);
       match_pattern(str,new_path,op);
     }
     else if(S_ISDIR(stat_entry.st_mode)){
-      strcat(new_path,dentry->d_name);
       strcat(new_path,"/");
       pids[n] = fork();
       n++;
